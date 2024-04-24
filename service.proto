@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package myservice;
+option go_package = "golang/smart_air_conditioner";
+
+// The service definition.
+service TemperatureService {
+  // Methods
+  rpc GetTemperature (Empty) returns (TemperatureResponse);
+  rpc GetModelResult (ModelRequest) returns (ModelResponse);
+}
+
+// Message types used by the services.
+message Empty {
+}
+
+message TemperatureResponse {
+  float temperature = 1;
+}
+
+message ModelRequest {
+  string input = 1;
+}
+
+message ModelResponse {
+  string result = 1;
+}
