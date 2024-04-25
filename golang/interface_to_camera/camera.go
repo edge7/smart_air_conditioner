@@ -22,7 +22,7 @@ func TakePhoto() error {
 		"libcamera-still",
 		"--width", "512",
 		"--height", "512",
-		"--shutter", "2000000",
+		"--shutter", "1000000",
 		"--gain", fmt.Sprint(gain),
 		"--denoise", "cdn_fast",
 		"--output", "/tmp/fresh_image.jpg",
