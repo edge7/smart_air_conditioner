@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"sync"
 	"time"
 )
 
+var photoMutex sync.Mutex
+
 func TakePhoto() error {
+	photoMutex.Lock()
+	defer photoMutex.Unlock()
 	currentHour := time.Now().Hour()
 	gain := getGain(currentHour)
 	log.Println("current hour:", currentHour)

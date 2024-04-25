@@ -16,6 +16,7 @@ dhtDevice = adafruit_dht.DHT22(board.D22)
 def get_temperature():
     tot = 0
     N = 3
+    real = 0
     for _ in range(N):
         try:
             temperature_c = dhtDevice.temperature
@@ -27,6 +28,7 @@ def get_temperature():
                 )
             )
             tot += temperature_c
+            real +=1
 
         except RuntimeError as error:
             # Errors happen fairly often, DHT's are hard to read, just keep going
@@ -39,4 +41,4 @@ def get_temperature():
 
         time.sleep(2.0)
 
-    return round(tot/N, 2)
+    return round(float(tot/real), 2)
