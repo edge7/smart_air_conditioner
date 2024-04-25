@@ -29,7 +29,7 @@
     max-height: 90vh;
     border: 1px solid #ddd;
     box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 2s ease-in-out infinite alternate,
+    animation: fadeIn 2s ease-in-out infinite,
                floatOut 16s ease-in-out infinite;
 }
 
