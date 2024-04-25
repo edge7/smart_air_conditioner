@@ -130,6 +130,7 @@ func main() {
 				func(w http.ResponseWriter, r *http.Request) {
 					// Check if file exists and, if not, use index.html
 					path := "./build" + r.URL.Path
+					log.Println("Path:", path)
 					if _, err := os.Stat(path); os.IsNotExist(err) {
 						http.ServeFile(w, r, "./build/index.html")
 					} else {
