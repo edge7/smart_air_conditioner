@@ -131,7 +131,7 @@ func main() {
 					// Check if file exists and, if not, use index.html
 					path := "./build" + r.URL.Path
 					if _, err := os.Stat(path); os.IsNotExist(err) {
-						http.ServeFile(w, r, "./path/to/react/build/index.html")
+						http.ServeFile(w, r, "./build/index.html")
 					} else {
 						http.ServeFile(w, r, path)
 					}
