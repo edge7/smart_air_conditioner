@@ -26,6 +26,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	defer mutex.Unlock()
 	log.Println("Status requested")
 	status, _ := getCurrentStatus()
+	log.Println("status is ", status)
 	if status == "on" {
 		acState.IsOn = true
 	} else {
@@ -81,10 +82,11 @@ func getCurrentStatus() (string, error) {
 }
 
 func temperatureHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Asking Temperature")
 	err, temperature := py.GetTemperature()
 
 	if err != nil {
-		log.Printf("could not get model result: %v\n", err)
+		log.Printf("could not get Temperature result: %v\n", err)
 		temperature = -1.0
 	}
 

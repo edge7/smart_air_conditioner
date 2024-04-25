@@ -9,10 +9,11 @@ from temperature import get_temperature
 class TemperatureService(service_pb2_grpc.TemperatureServiceServicer):
 
     def GetTemperature(self, request, context):
-        # Example implementation
+        print("Asked temperature")
         return service_pb2.TemperatureResponse(temperature=get_temperature())
 
     def GetModelResult(self, request, context):
+        print("asked model")
         input_string = request.input
         # Process the input string to produce a result
         return service_pb2.ModelResponse(result=get_prediction())
