@@ -144,22 +144,7 @@ func main() {
 			log.Fatal("ListenAndServe: ", err)
 		}
 	}()
-	log.Println("Server started on port 3030")
-	err, temperature := py.GetTemperature()
-	log.Println("never here")
+	log.Println("Server started on port 3030, now handling business logic...")
 
-	if err != nil {
-		log.Println()
-		log.Fatalf("could not get model result: %v", err)
-	}
-
-	log.Println("Temperature:", temperature)
-
-	err, modelResult := py.GetModelResult("input_path")
-
-	if err != nil {
-		log.Fatalf("could not get model result: %v", err)
-	}
-	log.Println("Model result:", modelResult)
-	time.Sleep(500 * time.Second)
+	time.Sleep(50000 * time.Second)
 }
