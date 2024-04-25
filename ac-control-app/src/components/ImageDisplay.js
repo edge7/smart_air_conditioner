@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-function ImageDisplay() {
+function ImageDisplay({ updateKey}) {
   const imageUrl = '/image';
 
   return (
