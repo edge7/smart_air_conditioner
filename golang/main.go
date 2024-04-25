@@ -37,6 +37,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 
 // toggleHandler toggles the AC's power state
 func toggleHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("Toggle requested")
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
@@ -44,6 +45,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 
 	mutex.Lock()
 	status, err := getCurrentStatus()
+	log.Println("asking for current status:", status)
 	if err != nil {
 		log.Println("Error getting current status: ", err)
 		status = "off"

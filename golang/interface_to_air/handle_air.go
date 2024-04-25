@@ -2,12 +2,13 @@ package interface_to_air
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 )
 
 func SendIRCommand(status string) error {
 	device := "/dev/lirc0"
-
+	log.Println("executing status: ", status)
 	cmd := exec.Command("ir-ctl", "-d", device, "--send="+status)
 
 	if err := cmd.Run(); err != nil {

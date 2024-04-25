@@ -10,7 +10,7 @@ function ACControl() {
   useEffect(() => {
     fetch('/status')
       .then(response => response.json())
-      .then(data => setIsOn(data.isOn)); // Adjust according to your API response
+      .then(data => setIsOn(data.isOn));
   }, []);
 
   const toggleAC = () => {
