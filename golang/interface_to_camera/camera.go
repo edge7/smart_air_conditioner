@@ -1,0 +1,50 @@
+package interface_to_camera
+
+import (
+	"fmt"
+	"log"
+	"os/exec"
+	"time"
+)
+
+func TakePhoto() error {
+	currentHour := time.Now().Hour()
+	gain := getGain(currentHour)
+	log.Println("current hour:", currentHour)
+	log.Println("gain:", gain)
+
+	cmd := exec.Command(
+		"libcamera-still",
+		"--width", "512",
+		"--height", "512",
+		"--shutter", "2000000",
+		"--gain", fmt.Sprint(gain),
+		"--denoise", "cdn_fast",
+		"--output", "/tmp/fresh_image.jpg",
+	)
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("command failed with %s: %s", err, output)
+	}
+
+	log.Println("output:", string(output))
+	return nil
+}
+
+func getGain(hour int) int {
+	switch {
+	case hour < 5:
+		return 3
+	case hour >= 5 && hour < 9:
+		return 2
+	case hour >= 9 && hour < 19:
+		return 0
+	case hour == 19 || hour == 20:
+		return 1
+	case hour > 20:
+		return 5
+	default:
+		return 0 // Default case, should not hit due to complete coverage above
+	}
+}

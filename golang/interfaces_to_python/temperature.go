@@ -3,7 +3,6 @@ package interfaces_to_python
 import (
 	"context"
 	"log"
-	"time"
 
 	pb "air_driver/smart_air_conditioner"
 	"google.golang.org/grpc"
@@ -13,18 +12,16 @@ import (
 func getClient() (*grpc.ClientConn, error) {
 	var conn *grpc.ClientConn
 	var err error
-
 	maxAttempts := 3
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		conn, err = grpc.Dial(
 			"localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithBlock(),
 		)
-		time.Sleep(15 * time.Second)
 		if err == nil {
 			return conn, nil
 		}
-		log.Printf("Attempt %d failed to connect: %v", attempt, err)
+		log.Printf("Attempt %d failed to connect: %v\n", attempt, err)
 	}
 
 	return nil, err // This return is redundant due to log.Fatalf but included for clarity

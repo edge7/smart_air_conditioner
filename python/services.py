@@ -2,6 +2,7 @@ from concurrent import futures
 import grpc
 import service_pb2
 import service_pb2_grpc
+from prediction import get_prediction
 from temperature import get_temperature
 
 
@@ -14,8 +15,7 @@ class TemperatureService(service_pb2_grpc.TemperatureServiceServicer):
     def GetModelResult(self, request, context):
         input_string = request.input
         # Process the input string to produce a result
-        result_string = "Processed result of " + input_string
-        return service_pb2.ModelResponse(result="model result")
+        return service_pb2.ModelResponse(result=get_prediction())
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
