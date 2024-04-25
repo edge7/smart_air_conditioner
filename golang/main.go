@@ -24,6 +24,12 @@ var mutex sync.Mutex
 func statusHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	status, _ := getCurrentStatus()
+	if status == "on" {
+		acState.IsOn = true
+	} else {
+		acState.IsOn = false
+	}
 	json.NewEncoder(w).Encode(acState)
 }
 
