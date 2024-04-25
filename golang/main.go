@@ -157,6 +157,9 @@ func main() {
 		}
 	}()
 	log.Println("Server started on port 3030, now handling business logic...")
+	for {
+		time.Sleep(50000 * time.Second)
 
-	time.Sleep(50000 * time.Second)
+	}
+
 }
