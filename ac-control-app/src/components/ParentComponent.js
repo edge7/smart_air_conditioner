@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ACControl from './ACControl';
+import ACControl from './AcControl';
 import ImageDisplay from './ImageDisplay';
 
 function ParentComponent() {

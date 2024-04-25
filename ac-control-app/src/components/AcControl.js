@@ -25,6 +25,7 @@ function ACControl({ onToggle }) {
       .then(response => response.json())
       .then(() => {
         setIsOn(newStatus);
+        console.log('onToggle is: ', onToggle);
         onToggle(); // Call the prop function to notify the parent
       });
   };
