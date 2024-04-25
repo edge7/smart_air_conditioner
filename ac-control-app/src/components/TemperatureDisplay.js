@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './TemperatureDisplay.css'; // Ensure the path is correct based on your project structure
+import './TemperatureDisplay.css';
 
 function TemperatureDisplay() {
   const [temperature, setTemperature] = useState(null);

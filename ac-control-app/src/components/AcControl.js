@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff, faSnowflake } from '@fortawesome/free-solid-svg-icons';
+import './ACControl.css';
 
 function ACControl({ onToggle }) {
   const [isOn, setIsOn] = useState(false);
@@ -29,6 +30,7 @@ function ACControl({ onToggle }) {
         onToggle(); // Call the prop function to notify the parent
       });
   };
+
 
   return (
     <div className="ac-status">

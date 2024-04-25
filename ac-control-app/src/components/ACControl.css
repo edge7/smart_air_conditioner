@@ -1,0 +1,37 @@
+/* ACControl.css */
+.ac-status {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+    background: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.ac-status p {
+    color: #333;
+    margin: 10px 0;
+}
+
+.ac-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.ac-button-on {
+    background-color: #4CAF50; /* Green for ON state */
+}
+
+.ac-button-off {
+    background-color: #f44336; /* Red for OFF state */
+}
+
+.ac-button:hover {
+    opacity: 0.8;
+}
