@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff, faSnowflake } from '@fortawesome/free-solid-svg-icons';
 
-function ACControl() {
+function ACControl({ onToggle }) {
   const [isOn, setIsOn] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,10 @@ function ACControl() {
       body: JSON.stringify({ isOn: newStatus }),
     })
       .then(response => response.json())
-      .then(() => setIsOn(newStatus));
+      .then(() => {
+        setIsOn(newStatus);
+        onToggle(); // Call the prop function to notify the parent
+      });
   };
 
   return (
