@@ -12,7 +12,7 @@ function ParentComponent() {
   return (
     <div>
       <ACControl onToggle={handleToggle} />
-      <ImageDisplay key={acToggle} />
+      <ImageDisplay updateKey={acToggle} />
     </div>
   );
 }
