@@ -12,5 +12,4 @@ function ImageDisplay({ updateKey }) {
     </div>
   );
 }
-
 export default ImageDisplay;
