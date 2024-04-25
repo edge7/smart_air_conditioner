@@ -2,7 +2,6 @@
 .image-container {
     display: flex;
     justify-content: center;
-    align-items: center;
     height: 100vh;
     background-color: #f0f0f0; /* Soft background color */
     padding: 0; /* Removes padding for zero space between components */
