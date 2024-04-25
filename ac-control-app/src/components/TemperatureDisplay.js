@@ -8,7 +8,8 @@ function TemperatureDisplay() {
     fetch('/temperature') // Adjust this URL to where your temperature data is served
       .then(response => response.json())
       .then(data => {
-        setTemperature(data.temperature); // Adjust "temperature" based on how data is structured in your response
+        const roundedTemperature = parseFloat(data.temperature.toFixed(2));
+        setTemperature(roundedTemperature); // Adjust "temperature" based on how data is structured in your response
         setLoading(false);
       })
       .catch(error => {
