@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 function ImageDisplay({ updateKey}) {
-  const imageUrl = '/image';
+  const imageUrl = `/image?time=${updateKey}`;
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
