@@ -18,10 +18,21 @@
     to { opacity: 1; }
 }
 
-@keyframes floatOut {
-    0%, 93.75% { transform: translateX(0); }
-    100% { transform: translateX(100px); }
+@keyframes circularMotion {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(10px, 10px); /* Moves right and down */
+    }
+    50% {
+        transform: translate(0, 20px); /* Moves back to the middle, but further down */
+    }
+    75% {
+        transform: translate(-10px, 10px); /* Moves left and down */
+    }
 }
+
 
 
 .ac-image {
@@ -29,6 +40,8 @@
     max-height: 90vh;
     border: 1px solid #ddd;
     box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
-    animation: floatOut 16s ease-in-out infinite;
+    animation: fadeIn 2s ease-in-out infinite alternate,
+               circularMotion 10s linear infinite; /* Adjust duration as needed */
 }
+
 
