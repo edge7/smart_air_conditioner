@@ -12,7 +12,7 @@ function ImageDisplay({ updateKey}) {
         alignItems: 'center',
         height: '100vh',
         backgroundColor: '#f0f0f0', // Soft background color
-        padding: '20px' // Adds padding around the image
+        padding: '5px' // Adds padding around the image
     }}>
       <img src={imageUrl} alt="Air Conditioner" style={{
           maxWidth: '100%',
