@@ -1,0 +1,29 @@
+/* TemperatureDisplay.css */
+.temperature-display {
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border: 2px solid #6e8efb;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+    }
+    50% {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #a777e3, #6e8efb);
+    }
+}
+
+.loading-text {
+    text-align: center;
+    font-size: 20px;
+    color: #333;
+}

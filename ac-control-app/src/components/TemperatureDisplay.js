@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './TemperatureDisplay.css'; // Ensure the path is correct based on your project structure
 
 function TemperatureDisplay() {
   const [temperature, setTemperature] = useState(null);
@@ -9,7 +10,7 @@ function TemperatureDisplay() {
       .then(response => response.json())
       .then(data => {
         const roundedTemperature = parseFloat(data.temperature.toFixed(2));
-        setTemperature(roundedTemperature); // Adjust "temperature" based on how data is structured in your response
+        setTemperature(roundedTemperature);
         setLoading(false);
       })
       .catch(error => {
@@ -19,11 +20,11 @@ function TemperatureDisplay() {
   }, []);
 
   if (loading) {
-    return <p>Loading temperature...</p>;
+    return <p className="loading-text">Loading temperature...</p>;
   }
 
   return (
-    <div style={{ textAlign: 'center', padding: '20px', fontSize: '24px' }}>
+    <div className="temperature-display">
       Current Temperature: {temperature}°C
     </div>
   );
