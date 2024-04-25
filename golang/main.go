@@ -24,6 +24,7 @@ var mutex sync.Mutex
 func statusHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	log.Println("Status requested")
 	status, _ := getCurrentStatus()
 	if status == "on" {
 		acState.IsOn = true

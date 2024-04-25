@@ -13,11 +13,13 @@ func getClient() (*grpc.ClientConn, error) {
 	var conn *grpc.ClientConn
 	var err error
 	maxAttempts := 3
+	log.Println("creating client connection...")
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		conn, err = grpc.Dial(
 			"localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithBlock(),
 		)
+		log.Println("client connection created")
 		if err == nil {
 			return conn, nil
 		}
