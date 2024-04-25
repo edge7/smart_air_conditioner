@@ -8,14 +8,14 @@ function ACControl() {
   const [isOn, setIsOn] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3030/status')
+    fetch('/status')
       .then(response => response.json())
       .then(data => setIsOn(data.isOn)); // Adjust according to your API response
   }, []);
 
   const toggleAC = () => {
     const newStatus = !isOn;
-    fetch('http://localhost:3030/toggle', {
+    fetch('/toggle', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 function ImageDisplay() {
-  const imageUrl = 'http://localhost:3030/image';
+  const imageUrl = '/image';
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

@@ -5,7 +5,7 @@ function TemperatureDisplay() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3030/temperature') // Adjust this URL to where your temperature data is served
+    fetch('/temperature') // Adjust this URL to where your temperature data is served
       .then(response => response.json())
       .then(data => {
         setTemperature(data.temperature); // Adjust "temperature" based on how data is structured in your response
