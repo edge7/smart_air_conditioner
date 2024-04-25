@@ -22,7 +22,7 @@ function ImageDisplay({ updateKey}) {
           transition: 'transform 2.3s ease-in-out' // Smooth transition for transform
         }}
         onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/500"; }}
-        onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'} // Scales up image on hover
+        onMouseOver={(e) => e.target.style.transform = 'scale(1.25)'} // Scales up image on hover
         onMouseOut={(e) => e.target.style.transform = 'scale(1)'} // Returns to original scale on mouse out
       />
     </div>
