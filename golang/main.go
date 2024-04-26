@@ -11,6 +11,7 @@ import (
 	air "air_driver/interface_to_air"
 	cam "air_driver/interface_to_camera"
 	py "air_driver/interfaces_to_python"
+	notif "air_driver/notifications"
 )
 
 type ACState struct {
@@ -156,8 +157,94 @@ func main() {
 		}
 	}()
 	log.Println("Server started on port 3030, now handling business logic...")
+	notif.SendNotification("Starting APP", "WHARFREE")
 	for {
-		time.Sleep(50000 * time.Second)
+		var temperature float32
+		var err error
+		err, temperature = py.GetTemperature()
+		if err != nil {
+			log.Printf("Main Thread: Could not get Temperature result: %v\n", err)
+			log.Printf("Checking the time to act proactively")
+			currentHour := time.Now().Hour()
+			log.Println("current hour is:", currentHour)
+			if currentHour >= 9 && currentHour < 20 {
+				log.Println("It is between 9am and 8pm, so we will turn on the AC, in any case")
+				temperature = 30
+			}
+		}
+
+		log.Println("Temperature is:", temperature)
+		if temperature > 22 {
+			status, errStatus := getCurrentStatus()
+			if errStatus != nil {
+				log.Println("Error getting current status: ", errStatus)
+				status = "off"
+			}
+			if status == "off" {
+				maxAttempts := 3
+				for attempt := 1; attempt <= maxAttempts; attempt++ {
+					errIr := air.SendIRCommand("on")
+					if errIr != nil {
+						log.Println("Error sending IR command: ", errIr)
+						if attempt == maxAttempts {
+							log.Printf("Attempt %d failed to sendIR: %v\n", attempt, errIr)
+							notif.SendNotification("Failed to turn on AC", "WHARFREE")
+						}
+					} else {
+						status, errStatus = getCurrentStatus()
+						if errStatus != nil {
+							log.Println("Error getting current status: ", errStatus)
+							status = "off"
+						}
+						if status == "on" {
+							log.Println("AC turned on successfully")
+							notif.SendNotification("AC turned on successfully", "WHARFREE")
+							break
+						}
+					}
+
+				}
+
+			} else {
+				log.Println("Status is on and need to stay on.. so nothing to do")
+			}
+		} else {
+			log.Println("Need to turn off the AC")
+			status, errStatus := getCurrentStatus()
+			if errStatus != nil {
+				log.Println("Error getting current status: ", errStatus)
+				status = "off"
+			}
+			if status == "on" {
+
+				maxAttempts := 3
+				for attempt := 1; attempt <= maxAttempts; attempt++ {
+					errIr := air.SendIRCommand("off")
+					if errIr != nil {
+						log.Println("Error sending IR command: ", errIr)
+						if attempt == maxAttempts {
+							log.Printf("Attempt %d failed to sendIR: %v\n", attempt, errIr)
+							notif.SendNotification("Failed to turn off AC", "WHARFREE")
+						}
+					} else {
+						status, errStatus = getCurrentStatus()
+						if errStatus != nil {
+							log.Println("Error getting current status: ", errStatus)
+							status = "on"
+						}
+						if status == "off" {
+							log.Println("AC turned off successfully")
+							notif.SendNotification("AC turned off successfully", "WHARFREE")
+							break
+						}
+					}
+
+				}
+
+			} else {
+				log.Println("Status is off and need to stay off.. so nothing to do")
+			}
+		}
 
 	}
 
