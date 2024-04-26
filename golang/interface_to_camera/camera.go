@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"sync"
 	"time"
+
+	py "air_driver/interfaces_to_python"
 )
 
 var photoMutex sync.Mutex
@@ -52,5 +54,19 @@ func getGain(hour int) int {
 		return 5
 	default:
 		return 0 // Default case, should not hit due to complete coverage above
+	}
+}
+
+func GetCurrentStatus() (string, error) {
+	err := TakePhoto()
+	if err != nil {
+		log.Println("Error taking photo: ", err)
+		return "", err
+	} else {
+		err, modelPred := py.GetModelResult("")
+		if err != nil {
+			return "", err
+		}
+		return modelPred, nil
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	handy_routine "air_driver/handy_routines"
 	air "air_driver/interface_to_air"
 	cam "air_driver/interface_to_camera"
 	py "air_driver/interfaces_to_python"
@@ -26,7 +27,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	log.Println("Status requested")
-	status, _ := getCurrentStatus()
+	status, _ := cam.GetCurrentStatus()
 	log.Println("status is ", status)
 	if status == "on" {
 		acState.IsOn = true
@@ -45,7 +46,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mutex.Lock()
-	status, err := getCurrentStatus()
+	status, err := cam.GetCurrentStatus()
 	log.Println("asking for current status:", status)
 	if err != nil {
 		log.Println("Error getting current status: ", err)
@@ -57,7 +58,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			air.SendIRCommand("on")
 		}
-		status, _ = getCurrentStatus()
+		status, _ = cam.GetCurrentStatus()
 	}
 	if status == "on" {
 		acState.IsOn = true
@@ -67,20 +68,6 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Unlock()
 
 	json.NewEncoder(w).Encode(acState)
-}
-
-func getCurrentStatus() (string, error) {
-	err := cam.TakePhoto()
-	if err != nil {
-		log.Println("Error taking photo: ", err)
-		return "", err
-	} else {
-		err, modelPred := py.GetModelResult("")
-		if err != nil {
-			return "", err
-		}
-		return modelPred, nil
-	}
 }
 
 func temperatureHandler(w http.ResponseWriter, r *http.Request) {
@@ -160,86 +147,83 @@ func main() {
 	notif.SendNotification("Starting APP", "WHARFREE")
 	for {
 		var temperature float32
-		var err error
-		err, temperature = py.GetTemperature()
-		if err != nil {
-			log.Printf("Main Thread: Could not get Temperature result: %v\n", err)
+		var errTemp error = nil
+		var errStatus error = nil
+		var status string
+		const OFF = "off"
+		const ON = "on"
+
+		tempChan := make(chan float32)
+		statusChan := make(chan string)
+		errChanTemp := make(chan error)
+		errChanStatus := make(chan error)
+		go handy_routine.GetTemperatureGoRoutine(tempChan, errChanTemp)
+		go handy_routine.GetStatusGoRoutine(statusChan, errChanStatus)
+
+		for i := 0; i < 2; i++ { // We expect 2 responses
+			select {
+			case temp := <-tempChan:
+				temperature = temp
+			case stat := <-statusChan:
+				status = stat
+			case e := <-errChanTemp:
+				errTemp = e
+				log.Printf(
+					"Temperature Thread: Could not get Temperature result: %v\n",
+					errTemp,
+				)
+			case e := <-errChanStatus:
+				errStatus = e
+				log.Printf("Status Thread: Could not get Status result: %v\n", errStatus)
+			}
+		}
+
+		// Here we have the temperature and the status and potential errors
+
+		// If the temperature is not valid, we will use the time to act proactively.
+		if errTemp != nil {
 			log.Printf("Checking the time to act proactively")
 			currentHour := time.Now().Hour()
 			log.Println("current hour is:", currentHour)
 			if currentHour >= 9 && currentHour < 20 {
 				log.Println("It is between 9am and 8pm, so we will turn on the AC, in any case")
 				temperature = 30
+			} else {
+				log.Println("It is not between 9am and 8pm, so we will not turn on the AC")
+				temperature = 10
 			}
 		}
 
 		log.Println("Temperature is:", temperature)
+
 		if temperature > 24 {
-			status, errStatus := getCurrentStatus()
+
+			// Here it's hot
+
 			if errStatus != nil {
 				log.Println("Error getting current status: ", errStatus)
-				status = "off"
+				status = OFF
 			}
-			if status == "off" {
+			if status == OFF {
 				maxAttempts := 3
-				for attempt := 1; attempt <= maxAttempts; attempt++ {
-					errIr := air.SendIRCommand("on")
-					if errIr != nil {
-						log.Println("Error sending IR command: ", errIr)
-						if attempt == maxAttempts {
-							log.Printf("Attempt %d failed to sendIR: %v\n", attempt, errIr)
-							notif.SendNotification("Failed to turn on AC", "WHARFREE")
-						}
-					} else {
-						status, errStatus = getCurrentStatus()
-						if errStatus != nil {
-							log.Println("Error getting current status: ", errStatus)
-							status = "off"
-						}
-						if status == "on" {
-							log.Println("AC turned on successfully")
-							notif.SendNotification("AC turned on successfully", "WHARFREE")
-							break
-						}
-					}
-
-				}
+				turnXReliable(maxAttempts, ON)
 
 			} else {
 				log.Println("Status is on and need to stay on.. so nothing to do")
 			}
 		} else {
+
+			// Here it's NOT hot
 			log.Println("Need to turn off the AC")
-			status, errStatus := getCurrentStatus()
+
 			if errStatus != nil {
 				log.Println("Error getting current status: ", errStatus)
-				status = "off"
+				status = ON
 			}
-			if status == "on" {
+			if status == ON {
 
 				maxAttempts := 3
-				for attempt := 1; attempt <= maxAttempts; attempt++ {
-					errIr := air.SendIRCommand("off")
-					if errIr != nil {
-						log.Println("Error sending IR command: ", errIr)
-						if attempt == maxAttempts {
-							log.Printf("Attempt %d failed to sendIR: %v\n", attempt, errIr)
-							notif.SendNotification("Failed to turn off AC", "WHARFREE")
-						}
-					} else {
-						status, errStatus = getCurrentStatus()
-						if errStatus != nil {
-							log.Println("Error getting current status: ", errStatus)
-							status = "on"
-						}
-						if status == "off" {
-							log.Println("AC turned off successfully")
-							notif.SendNotification("AC turned off successfully", "WHARFREE")
-							break
-						}
-					}
-
-				}
+				turnXReliable(maxAttempts, OFF)
 
 			} else {
 				log.Println("Status is off and need to stay off.. so nothing to do")
@@ -249,4 +233,35 @@ func main() {
 
 	}
 
+}
+
+func turnXReliable(
+	maxAttempts int, doWhat string,
+) {
+	var errStatus error
+	var status string
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		errIr := air.SendIRCommand(doWhat)
+		if errIr != nil {
+			log.Println("Error sending IR command: ", errIr)
+			if attempt == maxAttempts {
+				log.Printf("Attempt %d failed to sendIR: %v\n", attempt, errIr)
+				notif.SendNotification("Failed to turn AC "+doWhat, "WHARFREE")
+			}
+		} else {
+			// Need to take a new photo before checking
+			status, errStatus = cam.GetCurrentStatus()
+			if errStatus != nil {
+				log.Println("Error getting current status: ", errStatus)
+				status = ""
+			}
+			if status == doWhat {
+				log.Println("AC turned on successfully")
+				notif.SendNotification("AC turned successfully "+doWhat, "WHARFREE")
+				break
+			}
+		}
+		time.Sleep(10 * time.Second)
+
+	}
 }
