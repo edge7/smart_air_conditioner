@@ -80,7 +80,6 @@ func getCurrentStatus() (string, error) {
 		}
 		return modelPred, nil
 	}
-
 }
 
 func temperatureHandler(w http.ResponseWriter, r *http.Request) {

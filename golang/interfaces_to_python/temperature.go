@@ -26,7 +26,7 @@ func getClient() (*grpc.ClientConn, error) {
 		log.Printf("Attempt %d failed to connect: %v\n", attempt, err)
 	}
 
-	return nil, err // This return is redundant due to log.Fatalf but included for clarity
+	return nil, err
 }
 func GetTemperature() (error, float32) {
 	conn, error := getClient()

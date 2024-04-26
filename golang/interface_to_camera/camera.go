@@ -30,23 +30,24 @@ func TakePhoto() error {
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
+		log.Println("libcamera command failed with", err)
 		return fmt.Errorf("command failed with %s: %s", err, output)
 	}
-
-	log.Println("output:", string(output))
+	log.Println("libcamera command executed successfully")
+	//log.Println("output:", string(output))
 	return nil
 }
 
 func getGain(hour int) int {
 	switch {
 	case hour < 5:
-		return 3
+		return 4
 	case hour >= 5 && hour < 9:
-		return 2
+		return 3
 	case hour >= 9 && hour < 19:
 		return 0
 	case hour == 19 || hour == 20:
-		return 1
+		return 2
 	case hour > 20:
 		return 5
 	default:
