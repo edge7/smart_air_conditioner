@@ -256,7 +256,7 @@ func turnXReliable(
 				status = ""
 			}
 			if status == doWhat {
-				log.Println("AC turned on successfully")
+				log.Println("AC turned successfully " + doWhat)
 				notif.SendNotification("AC turned successfully "+doWhat, "WHARFREE")
 				break
 			}

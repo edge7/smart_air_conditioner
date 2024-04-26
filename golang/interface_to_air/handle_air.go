@@ -11,6 +11,8 @@ func SendIRCommand(status string) error {
 	device2 := "/dev/lirc1"
 	err := actualSend(status, device)
 	if err != nil {
+		log.Println("Error sending IR command: ", err)
+		log.Println("Trying with device2")
 		return actualSend(status, device2)
 	}
 	return err
