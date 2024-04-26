@@ -174,7 +174,7 @@ func main() {
 		}
 
 		log.Println("Temperature is:", temperature)
-		if temperature > 22 {
+		if temperature > 24 {
 			status, errStatus := getCurrentStatus()
 			if errStatus != nil {
 				log.Println("Error getting current status: ", errStatus)
@@ -245,6 +245,7 @@ func main() {
 				log.Println("Status is off and need to stay off.. so nothing to do")
 			}
 		}
+		time.Sleep(60 * 10 * time.Second)
 
 	}
 
