@@ -8,6 +8,15 @@ import (
 
 func SendIRCommand(status string) error {
 	device := "/dev/lirc0"
+	device2 := "/dev/lirc1"
+	err := actualSend(status, device)
+	if err != nil {
+		return actualSend(status, device2)
+	}
+	return err
+}
+
+func actualSend(status string, device string) error {
 	log.Println("executing status: ", status)
 	cmd := exec.Command("ir-ctl", "-d", device, "--send="+status)
 
