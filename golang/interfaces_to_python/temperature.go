@@ -41,5 +41,5 @@ func GetTemperature() (error, float32) {
 	if err != nil {
 		log.Fatalf("could not get temperature: %v", err)
 	}
-	return err, temp.Temperature
+	return err, temp.Temperature + 10
 }
