@@ -29,6 +29,7 @@ func init() {
 func Get(key string) (string, bool) {
 	value, ok := cache.Get(key)
 	if !ok {
+		log.Println("Could not get from cache: ", key)
 		return "", ok
 	}
 	log.Println("Got from cache: ", value)
