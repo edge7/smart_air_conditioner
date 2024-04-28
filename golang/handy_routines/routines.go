@@ -16,7 +16,7 @@ func GetTemperatureGoRoutine(result chan float32, errorChan chan error) {
 }
 
 func GetStatusGoRoutine(result chan string, errorChan chan error) {
-	status, err := cam.GetCurrentStatus()
+	status, err := cam.GetCurrentStatus(true)
 	if err != nil {
 		errorChan <- err
 	} else {

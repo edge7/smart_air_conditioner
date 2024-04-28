@@ -59,8 +59,13 @@ func getGain(hour int) int {
 	}
 }
 
-func GetCurrentStatus() (string, error) {
-	err := TakePhoto()
+func GetCurrentStatus(takePicture bool) (string, error) {
+	var err error = nil
+	if takePicture {
+		err = TakePhoto()
+	} else {
+		log.Println("Not taking a picture, using cached image")
+	}
 	if err != nil {
 		log.Println("Error taking photo: ", err)
 		return "", err

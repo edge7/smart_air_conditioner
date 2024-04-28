@@ -30,14 +30,17 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	log.Println("Status requested")
-	status, _ := cam.GetCurrentStatus()
+	_, ok := cache.Get(keyImg)
+	status, _ := cam.GetCurrentStatus(!ok)
 	log.Println("status is ", status)
 	if status == "on" {
 		acState.IsOn = true
 	} else {
 		acState.IsOn = false
 	}
-	cache.Set(keyImg, cam.ImgPath)
+	if !ok {
+		cache.Set(keyImg, cam.ImgPath)
+	}
 	json.NewEncoder(w).Encode(acState)
 }
 
@@ -50,7 +53,8 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mutex.Lock()
-	status, err := cam.GetCurrentStatus()
+	_, ok := cache.Get(keyImg)
+	status, err := cam.GetCurrentStatus(!ok)
 	log.Println("asking for current status:", status)
 	if err != nil {
 		log.Println("Error getting current status: ", err)
@@ -62,7 +66,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			air.SendIRCommand("on")
 		}
-		status, _ = cam.GetCurrentStatus()
+		status, _ = cam.GetCurrentStatus(true)
 	}
 	if status == "on" {
 		acState.IsOn = true
@@ -101,7 +105,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		err := cam.TakePhoto()
 		if err != nil {
-			log.Println("Failed to take photo: %v", err)
+			log.Printf("Failed to take photo: %v\n", err)
 		}
 	}
 	http.ServeFile(w, r, imagePath)
@@ -241,7 +245,7 @@ func turnXReliable(
 			}
 		} else {
 			// Need to take a new photo before checking
-			status, errStatus = cam.GetCurrentStatus()
+			status, errStatus = cam.GetCurrentStatus(true)
 			if errStatus != nil {
 				log.Println("Error getting current status: ", errStatus)
 				status = ""
