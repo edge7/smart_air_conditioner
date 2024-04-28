@@ -12,6 +12,8 @@ import (
 
 var photoMutex sync.Mutex
 
+const ImgPath = "/tmp/fresh_image.jpg"
+
 func TakePhoto() error {
 	photoMutex.Lock()
 	defer photoMutex.Unlock()
@@ -27,7 +29,7 @@ func TakePhoto() error {
 		"--shutter", "1000000",
 		"--gain", fmt.Sprint(gain),
 		"--denoise", "cdn_fast",
-		"--output", "/tmp/fresh_image.jpg",
+		"--output", ImgPath,
 	)
 
 	output, err := cmd.CombinedOutput()

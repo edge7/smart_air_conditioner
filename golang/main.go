@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"air_driver/cache"
 	handy_routine "air_driver/handy_routines"
 	air "air_driver/interface_to_air"
 	cam "air_driver/interface_to_camera"
@@ -23,6 +24,8 @@ type ACState struct {
 var acState ACState
 var mutex sync.Mutex
 
+const keyImg = "keyImg"
+
 func statusHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -34,6 +37,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		acState.IsOn = false
 	}
+	cache.Set(keyImg, cam.ImgPath)
 	json.NewEncoder(w).Encode(acState)
 }
 
@@ -91,38 +95,24 @@ func temperatureHandler(w http.ResponseWriter, r *http.Request) {
 
 // imageHandler serves a static image URL
 func imageHandler(w http.ResponseWriter, r *http.Request) {
-	err := cam.TakePhoto()
-	if err != nil {
-		log.Println("Failed to take photo: %v", err)
+	_, ok := cache.Get(keyImg)
+	imagePath := cam.ImgPath
+	if !ok {
+		err := cam.TakePhoto()
+		if err != nil {
+			log.Println("Failed to take photo: %v", err)
+		}
 	}
-	imagePath := "/tmp/fresh_image.jpg"
 	http.ServeFile(w, r, imagePath)
 }
 
-func cors(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Set CORS headers
-		w.Header().Set("Access-Control-Allow-Origin", "*") // Should be restricted in production
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		w.Header().Set(
-			"Access-Control-Allow-Headers", "Content-Type, Authorization",
-		) // Add other headers as needed
-
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		h(w, r)
-	}
-}
 func main() {
 
 	go func() {
-		http.HandleFunc("/status", cors(statusHandler))
-		http.HandleFunc("/toggle", cors(toggleHandler))
-		http.HandleFunc("/image", cors(imageHandler))
-		http.HandleFunc("/temperature", cors(temperatureHandler))
+		http.HandleFunc("/status", statusHandler)
+		http.HandleFunc("/toggle", toggleHandler)
+		http.HandleFunc("/image", imageHandler)
+		http.HandleFunc("/temperature", temperatureHandler)
 		http.Handle(
 			"/", http.HandlerFunc(
 				func(w http.ResponseWriter, r *http.Request) {
