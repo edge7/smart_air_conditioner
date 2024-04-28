@@ -55,6 +55,9 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	_, ok := cache.Get(keyImg)
 	status, err := cam.GetCurrentStatus(!ok)
+	if !ok {
+		cache.Set(keyImg, cam.ImgPath)
+	}
 	log.Println("asking for current status:", status)
 	if err != nil {
 		log.Println("Error getting current status: ", err)
@@ -73,7 +76,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		acState.IsOn = false
 	}
-	cache.Set(keyImg, cam.ImgPath)
+
 	mutex.Unlock()
 
 	json.NewEncoder(w).Encode(acState)
@@ -107,6 +110,9 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Failed to take photo: %v\n", err)
 		}
+	}
+	if !ok {
+		cache.Set(keyImg, cam.ImgPath)
 	}
 	http.ServeFile(w, r, imagePath)
 }
