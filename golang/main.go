@@ -55,9 +55,6 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	_, ok := cache.Get(keyImg)
 	status, err := cam.GetCurrentStatus(!ok)
-	if !ok {
-		cache.Set(keyImg, cam.ImgPath)
-	}
 	log.Println("asking for current status:", status)
 	if err != nil {
 		log.Println("Error getting current status: ", err)
@@ -70,6 +67,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 			air.SendIRCommand("on")
 		}
 		status, _ = cam.GetCurrentStatus(true)
+		cache.Set(keyImg, cam.ImgPath)
 	}
 	if status == "on" {
 		acState.IsOn = true
