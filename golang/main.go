@@ -69,6 +69,7 @@ func toggleHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		acState.IsOn = false
 	}
+	cache.Set(keyImg, cam.ImgPath)
 	mutex.Unlock()
 
 	json.NewEncoder(w).Encode(acState)
