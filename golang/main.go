@@ -101,6 +101,8 @@ func temperatureHandler(w http.ResponseWriter, r *http.Request) {
 
 // imageHandler serves a static image URL
 func imageHandler(w http.ResponseWriter, r *http.Request) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	_, ok := cache.Get(keyImg)
 	imagePath := cam.ImgPath
 	if !ok {

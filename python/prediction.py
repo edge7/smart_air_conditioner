@@ -13,4 +13,5 @@ def get_prediction():
         pred = 'on'
     else:
         pred = 'off'
+    print("pred is: ", pred)
     return pred

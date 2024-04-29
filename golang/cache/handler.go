@@ -18,7 +18,7 @@ func init() {
 				return 1
 			},
 		).
-		WithTTL(time.Second * 5).
+		WithTTL(time.Second * 10).
 		Build()
 	if err != nil {
 		panic(err)
