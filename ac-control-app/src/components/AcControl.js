@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPowerOff, faSnowflake } from '@fortawesome/free-solid-svg-icons';
+import { faPowerOff, faSnowflake, faCamera } from '@fortawesome/free-solid-svg-icons';
 import './ACControl.css';
 
 function ACControl({ onToggle }) {
@@ -44,6 +44,16 @@ function ACControl({ onToggle }) {
       });
   };
 
+  const turnOnExternalCamera = () => {
+    // Placeholder for actual request implementation
+    fetch('/ext_cam_on')
+      .then(response => response.ok ? setFeedback('Camera turned on.') : setFeedback('Failed to turn on camera.'))
+      .catch(error => {
+        console.error("Error turning on camera:", error);
+        setFeedback("Failed to connect to camera.");
+      });
+  };
+
   return (
     <div className="ac-status">
       {isLoading && <p>Loading...</p>}
@@ -52,6 +62,10 @@ function ACControl({ onToggle }) {
       </p>
       <button className={`ac-button ${isOn ? 'ac-button-on' : 'ac-button-off'}`} onClick={toggleAC} disabled={isLoading}>
         {isOn ? 'Turn Off' : 'Turn On'}
+      </button>
+      <button className="camera-button" onClick={turnOnExternalCamera} disabled={isLoading}>
+        <FontAwesomeIcon icon={faCamera} className="mx-2" />
+        Turn on Camera
       </button>
       {feedback && <p>{feedback}</p>}
     </div>

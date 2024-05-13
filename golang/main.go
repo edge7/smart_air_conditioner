@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"air_driver/cache"
+	ext_cam "air_driver/external_cam"
 	handy_routine "air_driver/handy_routines"
 	air "air_driver/interface_to_air"
 	cam "air_driver/interface_to_camera"
@@ -117,6 +118,28 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, imagePath)
 }
 
+func externalCamHandlerOn(w http.ResponseWriter, r *http.Request) {
+	log.Println("Ext. Camera On")
+	ext_cam.RequestExternalCam()
+	tempData := struct {
+		Message string `json:"message"`
+	}{
+		Message: "ok",
+	}
+	json.NewEncoder(w).Encode(tempData)
+}
+
+func externalCamHandlerGet(w http.ResponseWriter, r *http.Request) {
+	log.Println("Ext. Camera GET")
+	tempData := struct {
+		Message string `json:"message"`
+	}{
+		Message: ext_cam.GetExternalCam(),
+	}
+
+	json.NewEncoder(w).Encode(tempData)
+}
+
 func main() {
 
 	go func() {
@@ -124,6 +147,8 @@ func main() {
 		http.HandleFunc("/toggle", toggleHandler)
 		http.HandleFunc("/image", imageHandler)
 		http.HandleFunc("/temperature", temperatureHandler)
+		http.HandleFunc("/ext_cam_on", externalCamHandlerOn)
+		http.HandleFunc("/ext_cam_get", externalCamHandlerGet)
 		http.Handle(
 			"/", http.HandlerFunc(
 				func(w http.ResponseWriter, r *http.Request) {
