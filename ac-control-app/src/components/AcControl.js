@@ -47,7 +47,7 @@ function ACControl({ onToggle }) {
   const turnOnExternalCamera = () => {
     // Placeholder for actual request implementation
     fetch('/ext_cam_on')
-      .then(response => response.ok ? setFeedback('Camera turned on.') : setFeedback('Failed to turn on camera.'))
+      .then(response => response.ok ? setFeedback('Ext Camera turned on.') : setFeedback('Failed to turn on camera.'))
       .catch(error => {
         console.error("Error turning on camera:", error);
         setFeedback("Failed to connect to camera.");
@@ -65,7 +65,7 @@ function ACControl({ onToggle }) {
       </button>
       <button className="camera-button" onClick={turnOnExternalCamera} disabled={isLoading}>
         <FontAwesomeIcon icon={faCamera} className="mx-2" />
-        Turn on Camera
+        Turn on Ext. Camera
       </button>
       {feedback && <p>{feedback}</p>}
     </div>

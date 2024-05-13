@@ -131,10 +131,14 @@ func externalCamHandlerOn(w http.ResponseWriter, r *http.Request) {
 
 func externalCamHandlerGet(w http.ResponseWriter, r *http.Request) {
 	log.Println("Ext. Camera GET")
+	extStatusCam := ext_cam.GetExternalCam()
+	if extStatusCam == "yes" {
+		defer notif.SendNotification("External Camera On", "Wharfree")
+	}
 	tempData := struct {
 		Message string `json:"message"`
 	}{
-		Message: ext_cam.GetExternalCam(),
+		Message: extStatusCam,
 	}
 
 	json.NewEncoder(w).Encode(tempData)
