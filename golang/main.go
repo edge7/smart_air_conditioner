@@ -226,7 +226,7 @@ func main() {
 
 		log.Println("Temperature is:", temperature)
 
-		if temperature > 24 {
+		if temperature > 25.5 {
 
 			// Here it's hot
 
