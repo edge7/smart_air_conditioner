@@ -4,7 +4,7 @@
 import time
 import board
 import adafruit_dht
-
+import requests
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D22)
 
@@ -17,6 +17,7 @@ def get_temperature():
     tot = 0
     N = 3
     real = 0
+    external = 0
     for _ in range(N):
         try:
             temperature_c = dhtDevice.temperature
@@ -39,6 +40,12 @@ def get_temperature():
             dhtDevice.exit()
             raise error
 
-        time.sleep(2.0)
+        if external != 0:
+            time.sleep(2.0)
+        else:
+            external = float(requests.get("http://192.168.1.241/get_temp").text)
 
-    return round(float(tot/real), 2)
+
+    temp_close =  round(float(tot/real), 2)
+    print("external is {}".format(external))
+    return round( (temp_close + external) / 2 , 2)
