@@ -43,7 +43,14 @@ def get_temperature():
         if external != 0:
             time.sleep(2.0)
         else:
-            external = float(requests.get("http://192.168.1.241/get_temp").text)
+            for _ in range(5):
+                try:
+                    external = float(requests.get("http://192.168.1.241/get_temp").text)
+                    break
+                except Exception as error:
+                    print(error, "when trying to get external temp")
+                    time.sleep(2.0)
+                    external = 25
 
 
     temp_close =  round(float(tot/real), 2)
