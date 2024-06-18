@@ -45,7 +45,7 @@ def get_temperature():
         else:
             for _ in range(5):
                 try:
-                    external = float(requests.get("http://192.168.1.241/get_temp").text)
+                    external = float(requests.get("http://192.168.1.241/get_temp", timeout=15).text)
                     break
                 except Exception as error:
                     print(error, "when trying to get external temp")
