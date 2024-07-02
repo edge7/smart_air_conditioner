@@ -6,6 +6,7 @@ import board
 import adafruit_dht
 import requests
 import threading
+
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D22)
 
@@ -16,12 +17,15 @@ dhtDevice = adafruit_dht.DHT22(board.D22)
 
 external = 0
 
+
 def fetch_external_temp():
     global external
     while True:
         for _ in range(5):
             try:
-                external = float(requests.get("http://192.168.1.241/get_temp", timeout=15).text)
+                external = float(
+                    requests.get("http://192.168.1.241/get_temp", timeout=15).text
+                )
                 print("External temp fetched:", external)
                 break
             except Exception as error:
@@ -29,9 +33,12 @@ def fetch_external_temp():
                 time.sleep(2.0)
         time.sleep(300)  # Sleep for 5 minutes
 
+
 thread = threading.Thread(target=fetch_external_temp)
 thread.daemon = True
 thread.start()
+
+
 def get_temperature():
     global external
     tot = 0
@@ -48,7 +55,7 @@ def get_temperature():
                 )
             )
             tot += temperature_c
-            real +=1
+            real += 1
 
         except RuntimeError as error:
             # Errors happen fairly often, DHT's are hard to read, just keep going
@@ -61,10 +68,8 @@ def get_temperature():
 
         time.sleep(2.0)
 
-
-
-    temp_close =  round(float(tot/real), 2)
+    temp_close = round(float(tot / real), 2)
     print("external is {}".format(external))
-    tot = round( (0.3*temp_close + 0.7*external)  , 2)
+    tot = round((0.35 * temp_close + 0.65 * external), 2)
     print("tot is {}".format(tot))
     return tot
