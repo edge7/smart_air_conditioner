@@ -31,7 +31,7 @@ def fetch_external_temp():
             except Exception as error:
                 print(error, "when trying to get external temp")
                 time.sleep(2.0)
-        time.sleep(300)  # Sleep for 5 minutes
+        time.sleep(100)  # Sleep for 5 minutes
 
 
 thread = threading.Thread(target=fetch_external_temp)
