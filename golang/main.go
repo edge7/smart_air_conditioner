@@ -292,7 +292,6 @@ func turnXReliable(
 			} else {
 				log.Println("[WARNING] Unable to turn " + doWhat)
 				notif.SendNotification("[WARNING] Unable to turn "+doWhat, "ALERT")
-				break
 			}
 		}
 		time.Sleep(10 * time.Second)
