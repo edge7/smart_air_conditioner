@@ -289,6 +289,10 @@ func turnXReliable(
 				log.Println("AC turned successfully " + doWhat)
 				notif.SendNotification("AC turned successfully "+doWhat, "WHARFREE")
 				break
+			} else {
+				log.Println("[WARNING] Unable to turn " + doWhat)
+				notif.SendNotification("[WARNING] Unable to turn "+doWhat, "ALERT")
+				break
 			}
 		}
 		time.Sleep(10 * time.Second)
