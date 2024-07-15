@@ -259,7 +259,11 @@ func main() {
 				log.Println("Status is off and need to stay off.. so nothing to do")
 			}
 		}
-		time.Sleep(60 * 10 * time.Second)
+		if status == ON {
+			time.Sleep(60 * 15 * time.Second)
+		} else {
+			time.Sleep(60 * 5 * time.Second)
+		}
 
 	}
 
