@@ -259,7 +259,7 @@ func main() {
 				log.Println("Status is off and need to stay off.. so nothing to do")
 			}
 		}
-		status, _ = cam.GetCurrentStatus(!ok)
+		status, _ = cam.GetCurrentStatus(true)
 		if status == ON {
 			time.Sleep(60 * 15 * time.Second)
 		} else {
