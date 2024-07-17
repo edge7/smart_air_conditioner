@@ -70,6 +70,6 @@ def get_temperature():
 
     temp_close = round(float(tot / real), 2)
     print("external is {}".format(external))
-    tot = round((0.5 * temp_close + 0.5 * external), 2)
+    tot = round((0.3 * temp_close + 0.7 * external), 2)
     print("tot is {}".format(tot))
     return tot
